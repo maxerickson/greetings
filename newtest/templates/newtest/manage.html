@@ -1,0 +1,36 @@
+{% extends "testapp/base.html" %}
+
+{% load bootstrap3 %}
+{% load staticfiles %}
+
+{% block head %}
+<title>Manage Data</title>
+{% endblock %}
+{% block body %}
+    <div class="row bottom-buffer">
+      <a href="{% url "practice:index" %}"  class="btn btn-default">Return to front page</a>
+      <a href="{% url "practice:logout" %}"  class="btn btn-default">Log out of Greetings</a>
+    </div>
+    <div class="row">
+    <p>Refreshing patient information will syncronise the locally stored patient names and birthdays
+    with Dr Chrono.</p>
+    </div>
+    <div class="row bottom-buffer">
+    <a href="{% url "practice:manage.refresh" %}"  class="btn btn-default">Refresh patient information</a>
+    </div>
+    <div class="row">
+    <p>Deleting patient information will remove all patient information from the local database,
+    including the time of the most recent message, which is only stored locally.</p>
+    </div>
+    <div class="row bottom-buffer">
+    <a href="{% url "practice:manage.del.patients" %}"  class="btn btn-default">Delete patient information</a>
+    </div>
+    <div class="row">
+    <p>Deleting all information will remove all patient information from the local database and 
+    also delete the information used to access the Dr Chrono server, upon success you will no longer
+    have an account and will be returned to the front page.</p>
+    </div>
+    <div class="row bottom-buffer">
+    <a href="{% url "practice:manage.del.all" %}"  class="btn btn-default">Delete all information</a>
+    </div>
+{% endblock %}

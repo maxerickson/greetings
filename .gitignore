@@ -1,0 +1,6 @@
+venv
+oauthtest
+morenotes.txt
+*.pyc
+db.sqlite3
+settings.py

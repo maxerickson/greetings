@@ -1,0 +1,19 @@
+html {
+  position: relative;
+  min-height: 100%;
+}
+body {
+  /* Margin bottom by footer height */
+  margin-bottom: 70px;
+}
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  /* Set the fixed height of the footer here */
+  height: 70px;
+  padding-top: 20px;
+  background-color: #f7f7f7;
+}
+
+.bottom-buffer { margin-bottom:15px; }

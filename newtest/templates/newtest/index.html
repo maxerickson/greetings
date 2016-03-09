@@ -1,0 +1,32 @@
+{% extends "newtest/base.html" %}
+
+{% load bootstrap3 %}
+{% load staticfiles %}
+
+{% block head %}
+<title>Hello!</title>
+{% endblock %}
+{% block body %}
+    <div class="row bottom-buffer ">
+
+      <a href="{% url 'logout' %}"  class='btn btn-default'>Log out of Greetings</a>
+    </div>
+  {% if patient_list %}
+    <div class="row">
+      <p>Hi {{ practice.name }}, here are your patients with upcoming birthdays. </p>
+     </div><div class="row">
+      <table class="table table-condensed" >
+      <tr><th>Patient</th><th>Birthday</th></tr>
+      {% for patient in patient_list %}
+	<tr>
+	  <td>{{ patient.first_name }} {{ patient.last_name }}</td><th>{{ patient.date_of_birth }}</th>
+	</tr>
+      {% endfor %}
+      </table>
+      </div>
+  {% else %}
+      <div class="row">
+	<p>No patient list available for {{ username }}.</p>
+      </div>
+  {% endif %}
+{% endblock %}

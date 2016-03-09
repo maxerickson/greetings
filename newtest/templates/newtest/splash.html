@@ -1,0 +1,16 @@
+{% extends "newtest/base.html" %}
+
+{% load bootstrap3 %}
+{% load staticfiles %}
+
+{% block head %}
+<title>Hello!</title>
+{% endblock %}
+{% block body %}
+  <div class="row">
+    <p>Welcome to greetings app! Click the authorize button below to manage your patient data or set up a new account.</p>
+  </div>
+  <div class="row">
+    <a class="btn btn-default" href="{% url 'greetings:register' %}" >Authorize with Dr Chrono</a>
+  </div>
+{% endblock %}
