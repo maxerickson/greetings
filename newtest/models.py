@@ -29,5 +29,19 @@ class Token(models.Model):
     #timezone.now() + datetime.timedelta(seconds=data['expires_in'])
 
 
-    def refresh():
-        pass
+    def update(self, token):
+        self.access_token=token['access_token']
+        self.refresh_token=token['refresh_token']
+        self.expires=token['expires']
+
+    def as_dict(self):
+        d={'access_token': self.access_token,
+               'refresh_token': self.refresh_token,
+               'expires': self.expires,}
+        return d
+
+
+    @classmethod
+    def from_dict(cls,user,token):
+        tkn=cls(user=user, access_token=token['access_token'], refresh_token=token['refresh_token'], expires=token['expires'])
+        return tkn

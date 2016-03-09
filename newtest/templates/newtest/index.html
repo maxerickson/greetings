@@ -13,7 +13,7 @@
     </div>
   {% if patient_list %}
     <div class="row">
-      <p>Hi {{ practice.name }}, here are your patients with upcoming birthdays. </p>
+      <p>Hi {{ practice.name }}, {{ patient_list|length }} patients with birthdays today.</p>
      </div><div class="row">
       <table class="table table-condensed" >
       <tr><th>Patient</th><th>Birthday</th></tr>
