@@ -21,11 +21,14 @@ def oauth_session(callback):
                                                 scope=scope)
 
 
-def get_patients(user):
+def get_patients(user, date=None):
 	oauth=OAuth2Session(client_id = settings.OAUTH_CLIENT_ID, token=user.token.as_dict())
 	patients = []
 	#~ patients_url = 'https://drchrono.com/api/patients'
 	patients_url="http://localhost:9000/patient1"
+	if date is not None:
+		#~ setup date query
+		pass
 	while patients_url:
 	    data = oauth.get(patients_url).json()
 	    patients.extend(data['results'])
