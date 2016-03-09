@@ -17,8 +17,12 @@ from django.core.management.base import BaseCommand, CommandError
 from django.core.mail import send_mail
 import smtplib
 
+from django.utils import timezone
+import datetime
+
 from django.contrib.auth.models import User
 from newtest.models import Token
+
 import newtest.utils
 
 import logging
@@ -27,11 +31,29 @@ logger = logging.getLogger(__name__)
 class Command(BaseCommand):
     help = 'Generate and send birthday greetings.'
 
+    def add_arguments(self, parser):
+        # Named (optional) arguments
+        parser.add_argument('--date',
+            action='store',
+            dest='date',
+            default=None,
+            help='Date to send birthday greetings for, numeric month and day.')
+
     def handle(self, *args, **options):
-        self.stdout.write("Hello Command")
+        today=timezone.now().date()
+        if options['date']:
+            try:
+                m,d=options['date'].split('-')
+                date=datetime.date(today.year, int(m), int(d))
+            except:
+                import sys
+                sys.stdout.write('Error parsing date fragment. Use numbers for month and day. Omit year.\n')
+                sys.exit(1)
+        else:
+            date=today
         for user in User.objects.all():
             try:
-                patients=newtest.utils.get_patients(user)
+                patients=newtest.utils.get_patients(user, date=date)
             except Token.DoesNotExist:
                 # admin and staff users might not have tokens
                 pass
@@ -42,7 +64,6 @@ class Command(BaseCommand):
                                 "from2@example.com", ["to@example.com"])
 
     def fill(self, template, patient):
-        templ="Happy Birthday {{Name}}!, from {{Doctor}}."
         body=template.replace('{{Name}}', patient['first_name'] + ' ' + patient['last_name'])
         body=body.replace('{{Doctor}}', patient['doctor'])
         return body
@@ -55,5 +76,5 @@ class Command(BaseCommand):
         except smtplib.SMTPException:
                 logger.warning('Message to %s failed' % self.dest)
         else:
-                # update last sent message
+                # todo: track sent messages
                 pass
