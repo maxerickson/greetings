@@ -49,29 +49,34 @@ def fribble(request):
 
 # handle OAuth2 callback
 def authorize(request):
+    # handle explicit error parameters in redirect
     if 'error' in request.GET:
         messages.error(request, 'OAuth authentication with Dr Chrono failed.')
         return redirect('greetings:home')
 
     authorization_response = request.build_absolute_uri()
     oauth = utils.oauth_session(callback=request.build_absolute_uri(reverse('greetings:authorize')))
-    token = oauth.fetch_token(
-            'http://localhost:9000/o/token/',
-            authorization_response=authorization_response,
-            client_secret=settings.OAUTH_CLIENT_SECRET)
-    token['expires']=timezone.now() + datetime.timedelta(seconds=token['expires_at'])
-    # token is valid, so log user in
-    profile=oauth.get('http://localhost:9000/profile').json()
-    user=authenticate(remote_user=profile['username'])
-    login(request, user)
-    #~ # serialize token information to database for later use.
-    try: # fetch and update token
-        tkn=user.token
-        tkn.update(token)
-        tkn.save()
-    except Token.DoesNotExist: # new user, create token
-        tkn=Token.from_dict(user, token)
-        tkn.save()
-
+    token={}
+    try:
+        token = oauth.fetch_token(
+                'http://localhost:9000/o/token/',
+                authorization_response=authorization_response,
+                client_secret=settings.OAUTH_CLIENT_SECRET)
+    except:
+        messages.error(request, 'OAuth authentication with Dr Chrono failed.')
+    if token:
+        token['expires']=timezone.now() + datetime.timedelta(seconds=token['expires_at'])
+        # token is valid, so log user in
+        profile=oauth.get('http://localhost:9000/profile').json()
+        user=authenticate(remote_user=profile['username'])
+        login(request, user)
+        #~ # serialize token information to database for later use.
+        try: # fetch and update token
+            tkn=user.token
+            tkn.update(token)
+            tkn.save()
+        except Token.DoesNotExist: # new user, create token
+            tkn=Token.from_dict(user, token)
+            tkn.save()
     return redirect('greetings:home')
 
