@@ -3,7 +3,9 @@ from django.http import HttpResponse,HttpResponseRedirect
 from django.core.urlresolvers import reverse
 
 from django.contrib.auth import authenticate,login
+from django.contrib.auth import logout as auth_logout
 from django.contrib.auth.models import User
+from django.contrib import messages
 
 from django.conf import settings
 from .models import Token
@@ -35,6 +37,11 @@ def register(request):
     request.session.modified = True
     return redirect(authorization_url)
 
+def logout(request):
+    auth_logout(request)
+    messages.success(request, 'You have been logged out.')
+    return redirect('greetings:home')
+
 def fribble(request):
     user=authenticate(remote_user='batshit')
     login(request, user)
@@ -42,8 +49,11 @@ def fribble(request):
 
 # handle OAuth2 callback
 def authorize(request):
+    if 'error' in request.GET:
+        messages.error(request, 'OAuth authentication with Dr Chrono failed.')
+        return redirect('greetings:home')
+
     authorization_response = request.build_absolute_uri()
-    print request.session.get('oauth_state', 'Oauth State not set')
     oauth = utils.oauth_session(callback=request.build_absolute_uri(reverse('greetings:authorize')))
     token = oauth.fetch_token(
             'http://localhost:9000/o/token/',

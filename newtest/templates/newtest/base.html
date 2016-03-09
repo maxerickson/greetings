@@ -13,12 +13,21 @@
     <div class="page-header">
       <h2><div class="col-md-8 pull-xs-left">Greetings</div>
       {% if user.is_authenticated %}
-      <a  class="btn btn-default pull-xs-right" href="{% url 'logout' %}">Log Out</a>
+      <a  class="btn btn-default pull-xs-right" href="{% url 'greetings:logout' %}">Log Out</a>
       {% else %}
       <a class="btn btn-default pull-xs-right" href="{% url 'greetings:register' %}" >Sign In</a>
       {% endif %}
       </h2>
     </div>
+      {% if messages %}
+      <div class="row">
+      <ul class="messages">
+	{% for message in messages %}
+	  <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+	{% endfor %}
+      </ul>
+      </div>
+      {% endif %}
     {% block body %}{% endblock body %}
     </div><!-- /.container -->
     <footer class="footer">

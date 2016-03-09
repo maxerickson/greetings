@@ -7,6 +7,7 @@ app_name="greetings"
 urlpatterns = [
     url(r'^authorize$', views.authorize, name='authorize'),
     url(r'^register$', views.register, name='register'),
+    url(r'^logout$', views.logout, name='logout'),
     url(r'^fribble$', views.fribble, name='fribble'),
     url(r'^', views.home, name='home'),
 ]
