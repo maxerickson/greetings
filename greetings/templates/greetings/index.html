@@ -7,22 +7,24 @@
 <title>Hello!</title>
 {% endblock %}
 {% block body %}
+  <div class="row">
+  {% if patient_list|length > 0 %}
+    <p>Hi {{ username }}, {{ patient_list|length }} patients with birthdays today.</p>
+  {% else %}
+    <p>Hi {{ username }}, no patients with birthdays today.</p>
+  {% endif %}
+    <p>Visit the settings page to make changes to your templates or disable message sending.</p>
+  </div>
   {% if patient_list|length > 0 %}
     <div class="row">
-      <p>Hi {{ username }}, {{ patient_list|length }} patients with birthdays today.</p>
-     </div><div class="row">
-      <table class="table table-condensed" >
+    <table class="table table-condensed" >
       <tr><th>Patient</th><th>Doctor</th><th>Birthday</th></tr>
       {% for patient in patient_list %}
 	<tr>
 	  <td>{{ patient.first_name }} {{ patient.last_name }}</td><td>{{ patient.doctor }}</td><td>{{ patient.date_of_birth }}</td>
 	</tr>
       {% endfor %}
-      </table>
-      </div>
-  {% else %}
-      <div class="row">
-	<p>Hi {{ username }}, no patients with birthdays today.</p>
-      </div>
+    </table>
+    </div>
   {% endif %}
 {% endblock %}
