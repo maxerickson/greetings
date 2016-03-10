@@ -44,8 +44,12 @@ class Command(BaseCommand):
         today = timezone.now().date()
         if options['date']:
             try:
-                m, d = options['date'].split('-')
-                date = datetime.date(today.year, int(m), int(d))
+                if options['date'].count('-')==1:
+                    m, d = options['date'].split('-')
+                    date = datetime.date(today.year, int(m), int(d))
+                if options['date'].count('-')==2:
+                    y,m, d = options['date'].split('-')
+                    date = datetime.date(int(y), int(m), int(d))
             except:
                 raise CommandError('Error parsing date fragment. Use numbers for month and day. Omit year.\n')
         else:
@@ -61,14 +65,15 @@ class Command(BaseCommand):
                 body_template = Template(user.emailtemplates.body_template)
                 if user.emailtemplates.send_messages:
                     for patient in patients:
-                        context = Context({'Name': patient['first_name'] + ' ' + patient['last_name'],
-                                           'FirstName': patient['first_name'],
-                                           'LastName': patient['last_name'],
-                                           'Doctor': patient['doctor']})
-                        self.send(subject_template.render(context),
-                                  body_template.render(context),
-                                  "no-reply@example.com",
-                                  [patient['email']])
+                        if patient.get('email', False):
+                            context = Context({'Name': patient['first_name'] + ' ' + patient['last_name'],
+                                               'FirstName': patient['first_name'],
+                                               'LastName': patient['last_name'],
+                                               'Doctor': patient['doctor']})
+                            self.send(subject_template.render(context),
+                                      body_template.render(context),
+                                      "no-reply@example.com",
+                                      [patient['email']])
 
     def send(self, subject, body, sender, recipients):
         try:
