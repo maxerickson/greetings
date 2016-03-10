@@ -50,7 +50,6 @@ def authorize(request):
     except:
         messages.error(request, 'Could not retrieve OAuth token from Dr Chrono.')
     if token:
-        token['expires'] = timezone.now() + datetime.timedelta(seconds=token['expires_at'])
         # token is valid, so log user in
         profile = oauth.get(settings.GREETINGS_PROFILE_URL).json()
         user = authenticate(remote_user=profile['username'])
@@ -61,11 +60,11 @@ def authorize(request):
             tkn.update(token)
             tkn.save()
         except Token.DoesNotExist: # new user, create token
-            messages.info(request, 'Welcome to Greetings!')
             tkn = Token.from_dict(user, token)
             tkn.save()
             eml = EmailTemplates(user=user)
             eml.save()
+            messages.info(request, 'Welcome to Greetings!')
     return redirect('greetings:home')
 
 def logout(request):
