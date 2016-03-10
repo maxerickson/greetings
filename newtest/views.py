@@ -6,6 +6,7 @@ from django.forms.models import model_to_dict
 
 from django.contrib.auth import authenticate,login
 from django.contrib.auth import logout as auth_logout
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib import messages
 
@@ -83,6 +84,7 @@ def authorize(request):
             tkn.save()
     return redirect('greetings:home')
 
+@login_required(login_url='greetings:home')
 def settings_view(request):
     templatedata=request.user.emailtemplates
     # save post and reload page
@@ -98,6 +100,7 @@ def settings_view(request):
 
     return render(request, 'newtest/manage.html', {'email_templates': form})
 
+@login_required(login_url='greetings:home')
 def delete(request):
     return HttpResponse('delete!')
 
