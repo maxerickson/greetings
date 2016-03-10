@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse,HttpResponseRedirect
 from django.core.urlresolvers import reverse
+from django.forms.models import model_to_dict
+
 
 from django.contrib.auth import authenticate,login
 from django.contrib.auth import logout as auth_logout
@@ -9,6 +11,7 @@ from django.contrib import messages
 
 from django.conf import settings
 from .models import Token
+from .forms import EmailTemplatesForm
 import utils
 
 from django.utils import timezone
@@ -63,7 +66,7 @@ def authorize(request):
                 authorization_response=authorization_response,
                 client_secret=settings.OAUTH_CLIENT_SECRET)
     except:
-        messages.error(request, 'OAuth authentication with Dr Chrono failed.')
+        messages.error(request, 'Could not retrieve OAuth token from Dr Chrono.')
     if token:
         token['expires']=timezone.now() + datetime.timedelta(seconds=token['expires_at'])
         # token is valid, so log user in
@@ -79,4 +82,19 @@ def authorize(request):
             tkn=Token.from_dict(user, token)
             tkn.save()
     return redirect('greetings:home')
+
+def settings_view(request):
+    # save post and reload page
+    if request.method == 'POST':
+        form = EmailTemplatesForm(request.POST, instance=request.user.emailtemplates)
+        if form.is_valid():
+            form.save()
+            return redirect('greetings:settings')
+    else:
+        form = EmailTemplatesForm(initial=model_to_dict(request.user.emailtemplates))
+
+    return render(request, 'newtest/manage.html', {'email_templates': form})
+
+def delete(request):
+    return HttpResponse('delete!')
 

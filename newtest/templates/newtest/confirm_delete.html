@@ -1,0 +1,21 @@
+{% extends "testapp/base.html" %}
+
+{% load bootstrap3 %}
+{% load staticfiles %}
+
+{% block head %}
+<title>Confirm Accound Deletion</title>
+{% endblock %}
+{% block body %}
+  <div class="row">
+  <p>Are you certain you want to delete your account?</p>
+  </div>
+  <a href="{% url 'greetings:settings' %}"  class="btn btn-default">Return to Settings</a>
+  <form action="greetings:delete" method="post" class="form">
+    {% csrf_token %}
+    {% bootstrap_form form %}
+    {% buttons %}
+      <button type="submit" class="btn btn-primary">Confirm Delete</button>
+    {% endbuttons %}
+  </form>
+{% endblock %}

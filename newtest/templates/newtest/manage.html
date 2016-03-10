@@ -1,4 +1,4 @@
-{% extends "testapp/base.html" %}
+{% extends "newtest/base.html" %}
 
 {% load bootstrap3 %}
 {% load staticfiles %}
@@ -8,29 +8,32 @@
 {% endblock %}
 {% block body %}
     <div class="row bottom-buffer">
-      <a href="{% url "practice:index" %}"  class="btn btn-default">Return to front page</a>
-      <a href="{% url "practice:logout" %}"  class="btn btn-default">Log out of Greetings</a>
+      <a href="{% url 'greetings:home' %}"  class="btn btn-default">Return to front page</a>
     </div>
     <div class="row">
-    <p>Refreshing patient information will syncronise the locally stored patient names and birthdays
-    with Dr Chrono.</p>
-    </div>
-    <div class="row bottom-buffer">
-    <a href="{% url "practice:manage.refresh" %}"  class="btn btn-default">Refresh patient information</a>
+    <p>
+    </p>
     </div>
     <div class="row">
-    <p>Deleting patient information will remove all patient information from the local database,
-    including the time of the most recent message, which is only stored locally.</p>
-    </div>
-    <div class="row bottom-buffer">
-    <a href="{% url "practice:manage.del.patients" %}"  class="btn btn-default">Delete patient information</a>
+    <p>The text of the patient greetings can be customized below. There are four patterns that will be replaced with patient information, 
+      <mark>{% templatetag openvariable %}Name{% templatetag closevariable %}</mark>,
+      <mark>{% templatetag openvariable %}FirstName{% templatetag closevariable %}</mark>,
+      <mark>{% templatetag openvariable %}LastName{% templatetag closevariable %}</mark> and 
+      <mark>{% templatetag openvariable %}Doctor{% templatetag closevariable %}</mark>. 
+      Each pattern can be used as many times as desired.
+    </p>
     </div>
     <div class="row">
-    <p>Deleting all information will remove all patient information from the local database and 
-    also delete the information used to access the Dr Chrono server, upon success you will no longer
-    have an account and will be returned to the front page.</p>
+    <form action="{% url 'greetings:settings' %}" method="post" class="form">
+      {% csrf_token %}
+      {% bootstrap_form email_templates %}
+      {% buttons %}
+	<button type="submit" class="btn btn-default">Save Changes</button>
+      {% endbuttons %}
+    </form>
     </div>
     <div class="row bottom-buffer">
-    <a href="{% url "practice:manage.del.all" %}"  class="btn btn-default">Delete all information</a>
+    <p>The information used to access Dr Chrono will be deleted, along with any customizations that have been done to templates.</p>
+    <a href="{% url 'greetings:delete' %}"  class="btn btn-default">Delete all information</a>
     </div>
 {% endblock %}
