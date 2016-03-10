@@ -15,11 +15,9 @@ from .models import Token, EmailTemplates
 from .forms import EmailTemplatesForm
 from .utils import get_patients, oauth_session
 
-
-
 def home(request):
     if request.user.is_authenticated():
-        patients = get_patients(request.user)
+        patients = get_patients(request.user, birthday=datetime.date.today())
         username = request.user.get_username()
         context = {'username': username, 'patient_list': patients}
         return render(request, 'greetings/index.html', context)
@@ -39,15 +37,18 @@ def authorize(request):
         messages.error(request, 'OAuth authentication with Dr Chrono failed.')
         return redirect('greetings:home')
 
-    authorization_response = request.build_absolute_uri()
-    oauth = oauth_session(callback=request.build_absolute_uri(reverse('greetings:authorize')))
+    oauth = oauth_session(callback=request.build_absolute_uri(reverse('greetings:authorize')),
+                        state=request.session['oauth_state'] )
     token = {}
     try:
         token = oauth.fetch_token(
             settings.GREETINGS_OAUTH_TOKEN_URL,
-            authorization_response=authorization_response,
+            code=request.GET['code'],
+            #~ grant_type='authorization_code',
+            #~ authorization_response=authorization_response,
             client_secret=settings.GREETINGS_OAUTH_CLIENT_SECRET)
     except:
+        raise
         messages.error(request, 'Could not retrieve OAuth token from Dr Chrono.')
     if token:
         # token is valid, so log user in
