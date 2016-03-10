@@ -25,12 +25,19 @@ def get_patients(user, birthday=None):
                           token_updater=user.token.update)
     patients = []
     patients_url = settings.GREETINGS_PATIENTS_URL
-    payload={}
-    if birthday is not None:
-        payload['date_of_birth']=birthday.isoformat()
     while patients_url:
-        data = oauth.get(patients_url, params=payload).json()
-        print data
+        data = oauth.get(patients_url).json()
+        #~ print data
         patients.extend(data['results'])
         patients_url = data['next']
+    if birthday is not None:
+        monthday=birthday.isoformat()[5:].decode()
+        tokeep=list()
+        for p in patients:
+            dob=p['date_of_birth']
+            if dob is not None and dob[5:]==monthday:
+                tokeep.append(p)
+            elif dob:
+                print dob[5:], monthday
+        patients=tokeep
     return patients
