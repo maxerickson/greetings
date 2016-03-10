@@ -7,13 +7,6 @@
 <title>Manage Data</title>
 {% endblock %}
 {% block body %}
-    <div class="row bottom-buffer">
-      <a href="{% url 'greetings:home' %}"  class="btn btn-default">Return to front page</a>
-    </div>
-    <div class="row">
-    <p>
-    </p>
-    </div>
     <div class="row">
     <p>The text of the patient greetings can be customized below. There are four patterns that will be replaced with patient information, 
       <mark>{% templatetag openvariable %}Name{% templatetag closevariable %}</mark>,
@@ -21,6 +14,8 @@
       <mark>{% templatetag openvariable %}LastName{% templatetag closevariable %}</mark> and 
       <mark>{% templatetag openvariable %}Doctor{% templatetag closevariable %}</mark>. 
       Each pattern can be used as many times as desired.
+      <p>To temporarily stop sending messages, uncheck "Send Messages".</p>
+      <p>Make sure to click "Save Changes" when you are done editing.</p>
     </p>
     </div>
     <div class="row">
@@ -28,12 +23,13 @@
       {% csrf_token %}
       {% bootstrap_form email_templates %}
       {% buttons %}
+	<a href="{% url 'greetings:home' %}"  class="btn btn-default">Return to front page</a>
 	<button type="submit" class="btn btn-default">Save Changes</button>
       {% endbuttons %}
     </form>
     </div>
     <div class="row bottom-buffer">
-    <p>The information used to access Dr Chrono will be deleted, along with any customizations that have been done to templates.</p>
+    <p>To delete your account, click "Delete all information" below to go to the confirmation screen.</p>
     <a href="{% url 'greetings:delete' %}"  class="btn btn-default">Delete all information</a>
     </div>
 {% endblock %}

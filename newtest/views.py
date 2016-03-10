@@ -89,6 +89,7 @@ def settings_view(request):
         form = EmailTemplatesForm(request.POST, instance=request.user.emailtemplates)
         if form.is_valid():
             form.save()
+            messages.success(request, 'Acccount settings updated.')
             return redirect('greetings:settings')
     else:
         form = EmailTemplatesForm(initial=model_to_dict(request.user.emailtemplates))

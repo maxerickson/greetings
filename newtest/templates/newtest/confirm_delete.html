@@ -8,7 +8,9 @@
 {% endblock %}
 {% block body %}
   <div class="row">
-  <p>Are you certain you want to delete your account?</p>
+  <p>Are you certain you want to delete your account? The information used to
+  access Dr Chrono will be deleted, along with any customizations that have
+  been done to the message templates.</p>
   </div>
   <a href="{% url 'greetings:settings' %}"  class="btn btn-default">Return to Settings</a>
   <form action="greetings:delete" method="post" class="form">
