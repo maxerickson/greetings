@@ -14,18 +14,16 @@ import logging
 
 
 def oauth_session(callback):
-    scope=["read"]
-#~ scope=["user:read","patients:summary:read"]
-    return OAuth2Session(client_id = settings.OAUTH_CLIENT_ID, 
+    scope=settings.GREETINGS_OAUTH_SCOPE
+    return OAuth2Session(client_id = settings.GREETINGS_OAUTH_CLIENT_ID, 
                                                 redirect_uri=callback,
                                                 scope=scope)
 
 
 def get_patients(user, date=None):
-	oauth=OAuth2Session(client_id = settings.OAUTH_CLIENT_ID, token=user.token.as_dict())
+	oauth = OAuth2Session(client_id = settings.GREETINGS_OAUTH_CLIENT_ID, token=user.token.as_dict())
 	patients = []
-	#~ patients_url = 'https://drchrono.com/api/patients'
-	patients_url="http://localhost:9000/patient1"
+	patients_url = settings.GREETINGS_PATIENTS_URL 
 	if date is not None:
 		#~ setup date query
 		pass

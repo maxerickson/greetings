@@ -35,8 +35,7 @@ def home(request):
 
 def register(request):
     oauth=utils.oauth_session(callback=request.build_absolute_uri(reverse('greetings:authorize')))
-    # https://drchrono.com/o/authorize
-    authorization_url, state = oauth.authorization_url("http://localhost:9000/o/authorize")
+    authorization_url, state = oauth.authorization_url(settings.GREETINGS_OAUTH_AUTHORIZATION_URL)
     request.session['oauth_state'] = state
     request.session.modified = True
     return redirect(authorization_url)
@@ -58,15 +57,15 @@ def authorize(request):
     token={}
     try:
         token = oauth.fetch_token(
-                'http://localhost:9000/o/token/',
+                settings.GREETINGS_OAUTH_TOKEN_URL,
                 authorization_response=authorization_response,
-                client_secret=settings.OAUTH_CLIENT_SECRET)
+                client_secret=settings.GREETINGS_OAUTH_CLIENT_SECRET)
     except:
         messages.error(request, 'Could not retrieve OAuth token from Dr Chrono.')
     if token:
         token['expires']=timezone.now() + datetime.timedelta(seconds=token['expires_at'])
         # token is valid, so log user in
-        profile=oauth.get('http://localhost:9000/profile').json()
+        profile=oauth.get(settings.GREETINGS_PROFILE_URL).json()
         user=authenticate(remote_user=profile['username'])
         login(request, user)
         #~ # serialize token information to database for later use.
