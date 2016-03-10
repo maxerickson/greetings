@@ -45,3 +45,13 @@ class Token(models.Model):
     def from_dict(cls,user,token):
         tkn=cls(user=user, access_token=token['access_token'], refresh_token=token['refresh_token'], expires=token['expires'])
         return tkn
+
+class EmailTemplates(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
+
+    body_template = models.TextField(verbose_name='email message template',
+                                                default='Happy Birthday {{Name}}!, from {{Doctor}}.')
+
+    subject_template = models.CharField(verbose_name='email subject template',
+                                                                 max_length=100, 
+                                                                 default='Happy Birthday!')

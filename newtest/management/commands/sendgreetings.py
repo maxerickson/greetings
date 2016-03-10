@@ -14,6 +14,7 @@
 
 from django.core.management.base import BaseCommand, CommandError
 
+from django.template import Context, Template
 from django.core.mail import send_mail
 import smtplib
 
@@ -58,16 +59,15 @@ class Command(BaseCommand):
                 # admin and staff users might not have tokens
                 pass
             else:
+                subject_template=Template(user.emailtemplates.subject_template)
+                body_template=Template(user.emailtemplates.body_template)
                 for patient in patients:
-                    body=self.fill("Happy Birthday {{Name}}!, from {{Doctor}}.", patient)
-                    self.send("Happy Birthday!", body,
-                                "from2@example.com", ["to@example.com"])
-
-    def fill(self, template, patient):
-        body=template.replace('{{Name}}', patient['first_name'] + ' ' + patient['last_name'])
-        body=body.replace('{{Doctor}}', patient['doctor'])
-        return body
-
+                    context=Context({'Name': patient['first_name'] + ' ' + patient['last_name'],
+                              'FirstName': patient['first_name'],
+                              'LastName': patient['last_name'],
+                              'Doctor': patient['doctor']})
+                    self.send(subject_template.render(context), body_template.render(context),
+                                "no-reply@example.com", [patient['email']])
 
     def send(self, subject, body, sender, recipients):
         try:
