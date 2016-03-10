@@ -16,7 +16,12 @@ def oauth_session(callback):
 def get_patients(user, birthday=None):
     """Returns patients associated with a user."""
     oauth = OAuth2Session(client_id=settings.GREETINGS_OAUTH_CLIENT_ID,
-                          token=user.token.as_dict())
+                          token=user.token.as_dict(),
+                          # if the existing Bearer token is expired, requests_oathlib
+                          # will automatically fetch a new token and pass it 
+                          # to the token_updater. The update method on Token self saves.
+                          auto_refresh_url=settings.GREETINGS_OAUTH_TOKEN_URL,
+                          token_updater=user.token.update)
     patients = []
     patients_url = settings.GREETINGS_PATIENTS_URL
     if birthday is not None:

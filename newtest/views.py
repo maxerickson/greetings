@@ -58,7 +58,6 @@ def authorize(request):
         try: # fetch and update token
             tkn = user.token
             tkn.update(token)
-            tkn.save()
         except Token.DoesNotExist: # new user, create token
             tkn = Token.from_dict(user, token)
             tkn.save()

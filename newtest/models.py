@@ -16,6 +16,7 @@ class Token(models.Model):
         self.access_token = token['access_token']
         self.refresh_token = token['refresh_token']
         self.expires_at = token['expires_at']
+        self.save()
 
     def as_dict(self):
         d = {'access_token': self.access_token,
