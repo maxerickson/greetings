@@ -52,7 +52,7 @@ class Command(BaseCommand):
             date = today
         for user in User.objects.all():
             try:
-                patients = newtest.utils.get_patients(user, date=date)
+                patients = newtest.utils.get_patients(user, birthday=date)
             except Token.DoesNotExist:
                 # admin and staff users might not have tokens
                 pass
