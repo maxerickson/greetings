@@ -11,7 +11,7 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 
 from django.conf import settings
-from .models import Token
+from .models import Token, EmailTemplates
 from .forms import EmailTemplatesForm
 import utils
 
@@ -78,6 +78,8 @@ def authorize(request):
             messages.info(request, 'Welcome to Greetings!')
             tkn=Token.from_dict(user, token)
             tkn.save()
+            eml=EmailTemplates(user=user)
+            eml.save()
     return redirect('greetings:home')
 
 @login_required(login_url='greetings:home')
