@@ -84,15 +84,17 @@ def authorize(request):
     return redirect('greetings:home')
 
 def settings_view(request):
+    templatedata=request.user.emailtemplates
     # save post and reload page
     if request.method == 'POST':
-        form = EmailTemplatesForm(request.POST, instance=request.user.emailtemplates)
+        form = EmailTemplatesForm(request.POST, initial=model_to_dict(templatedata), instance=templatedata)
         if form.is_valid():
-            form.save()
-            messages.success(request, 'Acccount settings updated.')
+            if form.has_changed():
+                form.save()
+                messages.success(request, 'Acccount settings updated.')
             return redirect('greetings:settings')
     else:
-        form = EmailTemplatesForm(initial=model_to_dict(request.user.emailtemplates))
+        form = EmailTemplatesForm(initial=model_to_dict(templatedata))
 
     return render(request, 'newtest/manage.html', {'email_templates': form})
 
