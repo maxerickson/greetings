@@ -46,11 +46,6 @@ def logout(request):
     messages.success(request, 'You have been logged out.')
     return redirect('greetings:home')
 
-def fribble(request):
-    user=authenticate(remote_user='batshit')
-    login(request, user)
-    return redirect('greetings:home')
-
 # handle OAuth2 callback
 def authorize(request):
     # handle explicit error parameters in redirect
