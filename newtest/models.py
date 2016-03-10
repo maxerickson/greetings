@@ -55,3 +55,5 @@ class EmailTemplates(models.Model):
     subject_template = models.CharField(verbose_name='email subject template',
                                                                  max_length=100, 
                                                                  default='Happy Birthday!')
+
+    send_messages = models.BooleanField(verbose_name='Send Messages', default=True)

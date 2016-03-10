@@ -61,13 +61,14 @@ class Command(BaseCommand):
             else:
                 subject_template=Template(user.emailtemplates.subject_template)
                 body_template=Template(user.emailtemplates.body_template)
-                for patient in patients:
-                    context=Context({'Name': patient['first_name'] + ' ' + patient['last_name'],
-                              'FirstName': patient['first_name'],
-                              'LastName': patient['last_name'],
-                              'Doctor': patient['doctor']})
-                    self.send(subject_template.render(context), body_template.render(context),
-                                "no-reply@example.com", [patient['email']])
+                if user.emailtemplates.send_messages:
+                    for patient in patients:
+                        context=Context({'Name': patient['first_name'] + ' ' + patient['last_name'],
+                                  'FirstName': patient['first_name'],
+                                  'LastName': patient['last_name'],
+                                  'Doctor': patient['doctor']})
+                        self.send(subject_template.render(context), body_template.render(context),
+                                    "no-reply@example.com", [patient['email']])
 
     def send(self, subject, body, sender, recipients):
         try:
