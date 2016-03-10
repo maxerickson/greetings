@@ -22,9 +22,9 @@ from django.utils import timezone
 import datetime
 
 from django.contrib.auth.models import User
-from newtest.models import Token
+from greetings.models import Token
 
-import newtest.utils
+import greetings.utils
 
 import logging
 logger = logging.getLogger(__name__)
@@ -52,7 +52,7 @@ class Command(BaseCommand):
             date = today
         for user in User.objects.all():
             try:
-                patients = newtest.utils.get_patients(user, birthday=date)
+                patients = greetings.utils.get_patients(user, birthday=date)
             except Token.DoesNotExist:
                 # admin and staff users might not have tokens
                 pass

@@ -22,8 +22,8 @@ def home(request):
         patients = get_patients(request.user)
         username = request.user.get_username()
         context = {'username': username, 'patient_list': patients}
-        return render(request, 'newtest/index.html', context)
-    return render(request, 'newtest/splash.html')
+        return render(request, 'greetings/index.html', context)
+    return render(request, 'greetings/splash.html')
 
 def register(request):
     oauth = oauth_session(callback=request.build_absolute_uri(reverse('greetings:authorize')))
@@ -87,7 +87,7 @@ def settings_view(request):
     else:
         form = EmailTemplatesForm(initial=model_to_dict(templatedata))
 
-    return render(request, 'newtest/manage.html', {'email_templates': form})
+    return render(request, 'greetings/manage.html', {'email_templates': form})
 
 @login_required(login_url='greetings:home')
 def delete(request):
@@ -98,4 +98,4 @@ def delete(request):
         messages.success(request, 'Account information has been deleted.')
         return redirect('greetings:home')
 
-    return render(request, 'newtest/confirm_delete.html')
+    return render(request, 'greetings/confirm_delete.html')
