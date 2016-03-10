@@ -7,7 +7,7 @@
 <title>Hello!</title>
 {% endblock %}
 {% block body %}
-  {% if patient_list %}
+  {% if patient_list|length > 0 %}
     <div class="row">
       <p>Hi {{ username }}, {{ patient_list|length }} patients with birthdays today.</p>
      </div><div class="row">
@@ -22,7 +22,7 @@
       </div>
   {% else %}
       <div class="row">
-	<p>No patient list available for {{ username }}.</p>
+	<p>Hi {{ username }}, no patients with birthdays today.</p>
       </div>
   {% endif %}
 {% endblock %}
