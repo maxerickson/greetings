@@ -2,7 +2,7 @@ from django.conf.urls import include,url
 
 from . import views
 
-app_name="greetings"
+app_name = 'greetings'
 
 urlpatterns = [
     url(r'^authorize$', views.authorize, name='authorize'),

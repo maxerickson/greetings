@@ -1,49 +1,36 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponse,HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.forms.models import model_to_dict
 
-
-from django.contrib.auth import authenticate,login
+from django.contrib.auth import authenticate, login
 from django.contrib.auth import logout as auth_logout
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User
 from django.contrib import messages
+from django.utils import timezone
+
+import datetime
 
 from django.conf import settings
 from .models import Token, EmailTemplates
 from .forms import EmailTemplatesForm
-import utils
+from .utils import get_patients, oauth_session
 
-from django.utils import timezone
-import datetime
-import logging
-import requests_oauthlib
 
 
 def home(request):
     if request.user.is_authenticated():
-        oauth = utils.oauth_session(callback=request.build_absolute_uri(reverse('greetings:authorize')))
-        #~ patient_data=oauth.get("http://localhost:9000/patient1").json()
-        #~ patients=patient_data["results"]
-        patients=utils.get_patients(request.user)
-        #~ return redirect('practice:index', name=form.cleaned_data['drchrono_user'])
-        username=request.user.get_username()#request.session['username']
-        context={'username': username, 'patient_list': patients}
+        patients = get_patients(request.user)
+        username = request.user.get_username()
+        context = {'username': username, 'patient_list': patients}
         return render(request, 'newtest/index.html', context)
-    return render(request,'newtest/splash.html')
+    return render(request, 'newtest/splash.html')
 
 def register(request):
-    oauth=utils.oauth_session(callback=request.build_absolute_uri(reverse('greetings:authorize')))
+    oauth = oauth_session(callback=request.build_absolute_uri(reverse('greetings:authorize')))
     authorization_url, state = oauth.authorization_url(settings.GREETINGS_OAUTH_AUTHORIZATION_URL)
     request.session['oauth_state'] = state
     request.session.modified = True
     return redirect(authorization_url)
-
-def logout(request):
-    auth_logout(request)
-    messages.success(request, 'You have been logged out.')
-    return redirect('greetings:home')
 
 # handle OAuth2 callback
 def authorize(request):
@@ -53,40 +40,47 @@ def authorize(request):
         return redirect('greetings:home')
 
     authorization_response = request.build_absolute_uri()
-    oauth = utils.oauth_session(callback=request.build_absolute_uri(reverse('greetings:authorize')))
-    token={}
+    oauth = oauth_session(callback=request.build_absolute_uri(reverse('greetings:authorize')))
+    token = {}
     try:
         token = oauth.fetch_token(
-                settings.GREETINGS_OAUTH_TOKEN_URL,
-                authorization_response=authorization_response,
-                client_secret=settings.GREETINGS_OAUTH_CLIENT_SECRET)
+            settings.GREETINGS_OAUTH_TOKEN_URL,
+            authorization_response=authorization_response,
+            client_secret=settings.GREETINGS_OAUTH_CLIENT_SECRET)
     except:
         messages.error(request, 'Could not retrieve OAuth token from Dr Chrono.')
     if token:
-        token['expires']=timezone.now() + datetime.timedelta(seconds=token['expires_at'])
+        token['expires'] = timezone.now() + datetime.timedelta(seconds=token['expires_at'])
         # token is valid, so log user in
-        profile=oauth.get(settings.GREETINGS_PROFILE_URL).json()
-        user=authenticate(remote_user=profile['username'])
+        profile = oauth.get(settings.GREETINGS_PROFILE_URL).json()
+        user = authenticate(remote_user=profile['username'])
         login(request, user)
         #~ # serialize token information to database for later use.
         try: # fetch and update token
-            tkn=user.token
+            tkn = user.token
             tkn.update(token)
             tkn.save()
         except Token.DoesNotExist: # new user, create token
             messages.info(request, 'Welcome to Greetings!')
-            tkn=Token.from_dict(user, token)
+            tkn = Token.from_dict(user, token)
             tkn.save()
-            eml=EmailTemplates(user=user)
+            eml = EmailTemplates(user=user)
             eml.save()
+    return redirect('greetings:home')
+
+def logout(request):
+    auth_logout(request)
+    messages.success(request, 'You have been logged out.')
     return redirect('greetings:home')
 
 @login_required(login_url='greetings:home')
 def settings_view(request):
-    templatedata=request.user.emailtemplates
+    templatedata = request.user.emailtemplates
     # save post and reload page
     if request.method == 'POST':
-        form = EmailTemplatesForm(request.POST, initial=model_to_dict(templatedata), instance=templatedata)
+        form = EmailTemplatesForm(request.POST,
+                                  initial=model_to_dict(templatedata),
+                                  instance=templatedata)
         if form.is_valid():
             if form.has_changed():
                 form.save()
@@ -100,7 +94,7 @@ def settings_view(request):
 @login_required(login_url='greetings:home')
 def delete(request):
     if request.method == 'POST':
-        user=request.user
+        user = request.user
         auth_logout(request)
         user.delete()
         messages.success(request, 'Account information has been deleted.')

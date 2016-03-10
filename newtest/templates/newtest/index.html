@@ -7,10 +7,6 @@
 <title>Hello!</title>
 {% endblock %}
 {% block body %}
-    <div class="row bottom-buffer ">
-
-      <!--comment <a href="{% url 'greetings:logout' %}"  class='btn btn-default'>Log out of Greetings</a>-->
-    </div>
   {% if patient_list %}
     <div class="row">
       <p>Hi {{ username }}, {{ patient_list|length }} patients with birthdays today.</p>

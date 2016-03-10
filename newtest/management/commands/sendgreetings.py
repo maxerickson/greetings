@@ -35,47 +35,49 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         # Named (optional) arguments
         parser.add_argument('--date',
-            action='store',
-            dest='date',
-            default=None,
-            help='Date to send birthday greetings for, numeric month and day.')
+                            action='store',
+                            dest='date',
+                            default=None,
+                            help='Date to send birthday greetings for, numeric month and day.')
 
     def handle(self, *args, **options):
-        today=timezone.now().date()
+        today = timezone.now().date()
         if options['date']:
             try:
-                m,d=options['date'].split('-')
-                date=datetime.date(today.year, int(m), int(d))
+                m, d = options['date'].split('-')
+                date = datetime.date(today.year, int(m), int(d))
             except:
-                import sys
-                sys.stdout.write('Error parsing date fragment. Use numbers for month and day. Omit year.\n')
-                sys.exit(1)
+                raise CommandError('Error parsing date fragment. Use numbers for month and day. Omit year.\n')
         else:
-            date=today
+            date = today
         for user in User.objects.all():
             try:
-                patients=newtest.utils.get_patients(user, date=date)
+                patients = newtest.utils.get_patients(user, date=date)
             except Token.DoesNotExist:
                 # admin and staff users might not have tokens
                 pass
             else:
-                subject_template=Template(user.emailtemplates.subject_template)
-                body_template=Template(user.emailtemplates.body_template)
+                subject_template = Template(user.emailtemplates.subject_template)
+                body_template = Template(user.emailtemplates.body_template)
                 if user.emailtemplates.send_messages:
                     for patient in patients:
-                        context=Context({'Name': patient['first_name'] + ' ' + patient['last_name'],
-                                  'FirstName': patient['first_name'],
-                                  'LastName': patient['last_name'],
-                                  'Doctor': patient['doctor']})
-                        self.send(subject_template.render(context), body_template.render(context),
-                                    "no-reply@example.com", [patient['email']])
+                        context = Context({'Name': patient['first_name'] + ' ' + patient['last_name'],
+                                           'FirstName': patient['first_name'],
+                                           'LastName': patient['last_name'],
+                                           'Doctor': patient['doctor']})
+                        self.send(subject_template.render(context),
+                                  body_template.render(context),
+                                  "no-reply@example.com",
+                                  [patient['email']])
 
     def send(self, subject, body, sender, recipients):
         try:
-                send_mail(subject, body, sender,
-                                recipients, fail_silently=False)
+            send_mail(subject,
+                      body, sender,
+                      recipients,
+                      fail_silently=False)
         except smtplib.SMTPException:
-                logger.warning('Message to %s failed' % self.dest)
+            logger.warning('Message to %s failed' % self.dest)
         else:
-                # todo: track sent messages
-                pass
+            # todo: track sent messages
+            pass
