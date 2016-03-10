@@ -75,6 +75,7 @@ def authorize(request):
             tkn.update(token)
             tkn.save()
         except Token.DoesNotExist: # new user, create token
+            messages.info(request, 'Welcome to Greetings!')
             tkn=Token.from_dict(user, token)
             tkn.save()
     return redirect('greetings:home')
@@ -100,7 +101,7 @@ def delete(request):
     if request.method == 'POST':
         user=request.user
         auth_logout(request)
-        print 'delete account!'
+        user.delete()
         messages.success(request, 'Account information has been deleted.')
         return redirect('greetings:home')
 
