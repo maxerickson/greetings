@@ -1,4 +1,4 @@
-{% extends "testapp/base.html" %}
+{% extends "newtest/base.html" %}
 
 {% load bootstrap3 %}
 {% load staticfiles %}
@@ -12,11 +12,10 @@
   access Dr Chrono will be deleted, along with any customizations that have
   been done to the message templates.</p>
   </div>
-  <a href="{% url 'greetings:settings' %}"  class="btn btn-default">Return to Settings</a>
-  <form action="greetings:delete" method="post" class="form">
+  <form action="{% url 'greetings:delete' %}" method="post" class="form">
     {% csrf_token %}
-    {% bootstrap_form form %}
     {% buttons %}
+      <a href="{% url 'greetings:settings' %}"  class="btn btn-default">Return to Settings</a>
       <button type="submit" class="btn btn-primary">Confirm Delete</button>
     {% endbuttons %}
   </form>

@@ -97,5 +97,11 @@ def settings_view(request):
 
 @login_required(login_url='greetings:home')
 def delete(request):
-    return HttpResponse('delete!')
+    if request.method == 'POST':
+        user=request.user
+        auth_logout(request)
+        print 'delete account!'
+        messages.success(request, 'Account information has been deleted.')
+        return redirect('greetings:home')
 
+    return render(request, 'newtest/confirm_delete.html')
