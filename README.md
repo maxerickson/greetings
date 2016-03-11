@@ -13,8 +13,6 @@ settings for testing:
     GREETINGS_OAUTH_AUTHORIZATION_URL = 'https://drchrono.com/o/authorize'
     GREETINGS_OAUTH_TOKEN_URL = 'https://drchrono.com/o/token'
     GREETINGS_OAUTH_SCOPE = ['user:read', 'patients:summary:read']
-    GREETINGS_PATIENTS_URL = 'https://drchrono.com/api/patients'
-    GREETINGS_PROFILE_URL = 'https://drchrono.com/api/users/current'
 
 Configure a theme for bootstrap3, for example:
 

@@ -70,8 +70,8 @@ def authorize(request):
         raise
         messages.error(request, 'Could not retrieve OAuth token from Dr Chrono.')
     if token:
-        # token is valid, so log user in
-        profile = oauth.get(settings.GREETINGS_PROFILE_URL).json()
+        # fetch profile to associate token with username.
+        profile = oauth.get('https://drchrono.com/api/users/current').json()
         user = authenticate(remote_user=profile['username'])
         login(request, user)
         #~ # serialize token information to database for later use.
