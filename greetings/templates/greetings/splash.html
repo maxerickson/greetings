@@ -8,9 +8,9 @@
 {% endblock %}
 {% block body %}
   <div class="row">
-    <p>Welcome to Greetings! Use Greetings to email a happy birthday message to patients in your Dr Chrono practice.</p>
-    <p>To get started using Greetings, click authorize below. You will be sent to the Dr Chrono site to authorize Greetings 
-    to read your Dr Chrono profile and patient summary information. The profile is used to create a user name, and the patient summary is used
+    <p>Welcome to Greetings! Use Greetings to email a happy birthday message to patients in your drchrono practice.</p>
+    <p>To get started using Greetings, click authorize below. You will be sent to the drchrono site to authorize Greetings 
+    to read your drchrono profile and patient summary information. The profile is used to create a user name, and the patient summary is used
     to access the patient name, email and doctor.</p>
     <p>The default message is a simple happy birthday message, with the patients name and primary doctor inserted:</p>
     <pre>Subject: Happy Birthday!
@@ -20,6 +20,6 @@ Happy Birthday Mike Stevens!, from Doctor Smith.</pre>
     The messages can be paused at any time.</p>
   </div>
   <div class="row">
-    <a class="btn btn-default" href="{% url 'greetings:register' %}" >Authorize with Dr Chrono</a>
+    <a class="btn btn-default" href="{% url 'greetings:register' %}" >Authorize with drchrono</a>
   </div>
 {% endblock %}

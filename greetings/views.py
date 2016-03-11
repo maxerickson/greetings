@@ -53,7 +53,7 @@ def register(request):
 def authorize(request):
     # handle explicit error parameters in redirect
     if 'error' in request.GET:
-        messages.error(request, 'OAuth authentication with Dr Chrono failed.')
+        messages.error(request, 'OAuth authentication with drchrono failed.')
         return redirect('greetings:home')
 
     oauth = oauth_session(callback=request.build_absolute_uri(reverse('greetings:authorize')),
@@ -68,7 +68,7 @@ def authorize(request):
             client_secret=settings.GREETINGS_OAUTH_CLIENT_SECRET)
     except:
         raise
-        messages.error(request, 'Could not retrieve OAuth token from Dr Chrono.')
+        messages.error(request, 'Could not retrieve OAuth token from drchrono.')
     if token:
         # fetch profile to associate token with username.
         profile = oauth.get('https://drchrono.com/api/users/current').json()

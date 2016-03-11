@@ -27,7 +27,7 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     license='Apache License 2.0',
-    description='A simple Django app to send email greetings to Dr Chrono patients.',
+    description='A simple Django app to send email greetings to drchrono patients.',
     long_description=README,
     author='Max Erickson',
     author_email='maxerickson@gmail.com',
