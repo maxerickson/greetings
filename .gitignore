@@ -1,5 +1,6 @@
 venv
 oauthtest
+ot2
 morenotes.txt
 *.pyc
 db.sqlite3
