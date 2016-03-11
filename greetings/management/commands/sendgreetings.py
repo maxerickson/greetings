@@ -56,7 +56,9 @@ class Command(BaseCommand):
             date = today
         for user in User.objects.all():
             try:
-                patients = greetings.utils.get_patients(user, birthday=date)
+                handler = greetings.utils.Chrono_Handler(user)
+                patients = handler.get_patients(birthday=date)
+                doctors = handler.doctor_map()
             except Token.DoesNotExist:
                 # admin and staff users might not have tokens
                 pass
@@ -65,15 +67,17 @@ class Command(BaseCommand):
                 body_template = Template(user.emailtemplates.body_template)
                 if user.emailtemplates.send_messages:
                     for patient in patients:
-                        if patient.get('email', False):
+                        if 'email' in patient:
                             context = Context({'Name': patient['first_name'] + ' ' + patient['last_name'],
                                                'FirstName': patient['first_name'],
                                                'LastName': patient['last_name'],
-                                               'Doctor': patient['doctor']})
+                                               'Doctor': doctors[patient['doctor']]})
                             self.send(subject_template.render(context),
                                       body_template.render(context),
                                       "no-reply@example.com",
                                       [patient['email']])
+                        else:
+                            print patient
 
     def send(self, subject, body, sender, recipients):
         try:

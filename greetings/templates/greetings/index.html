@@ -21,7 +21,7 @@
       <tr><th>Patient</th><th>Doctor</th><th>Birthday</th></tr>
       {% for patient in patient_list %}
 	<tr>
-	  <td>{{ patient.first_name }} {{ patient.last_name }}</td><td>{{ patient.doctor }}</td><td>{{ patient.date_of_birth }}</td>
+	  <td>{{ patient.first_name }} {{ patient.last_name }}</td><td>{{ patient.doctor_name }}</td><td>{{ patient.date_of_birth }}</td>
 	</tr>
       {% endfor %}
     </table>

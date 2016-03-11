@@ -27,11 +27,16 @@ import datetime
 from django.conf import settings
 from .models import Token, EmailTemplates
 from .forms import EmailTemplatesForm
-from .utils import get_patients, oauth_session
+#~ from .utils import get_patients, oauth_session
+from .utils import Chrono_Handler, oauth_session
 
 def home(request):
     if request.user.is_authenticated():
-        patients = get_patients(request.user, birthday=datetime.date.today())
+        handler=Chrono_Handler(request.user)
+        patients = handler.get_patients()#birthday=datetime.date.today())
+        doctors = handler.doctor_map()
+        for p in patients:
+            p['doctor_name'] = doctors[p['doctor']]
         username = request.user.get_username()
         context = {'username': username, 'patient_list': patients}
         return render(request, 'greetings/index.html', context)
