@@ -27,7 +27,7 @@ def oauth_session(callback, state=None):
                          state=state)
 
 
-class Chrono_Handler(object):
+class ChronoHandler(object):
     api_root='https://drchrono.com/api/'
     def __init__(self, user):
         self.user=user

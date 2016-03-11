@@ -56,7 +56,7 @@ class Command(BaseCommand):
             date = today
         for user in User.objects.all():
             try:
-                handler = greetings.utils.Chrono_Handler(user)
+                handler = greetings.utils.ChronoHandler(user)
                 patients = handler.get_patients(birthday=date)
                 doctors = handler.doctor_map()
             except Token.DoesNotExist:

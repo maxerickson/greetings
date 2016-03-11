@@ -28,11 +28,11 @@ from django.conf import settings
 from .models import Token, EmailTemplates
 from .forms import EmailTemplatesForm
 #~ from .utils import get_patients, oauth_session
-from .utils import Chrono_Handler, oauth_session
+from .utils import ChronoHandler, oauth_session
 
 def home(request):
     if request.user.is_authenticated():
-        handler=Chrono_Handler(request.user)
+        handler=ChronoHandler(request.user)
         patients = handler.get_patients()#birthday=datetime.date.today())
         doctors = handler.doctor_map()
         for p in patients:
